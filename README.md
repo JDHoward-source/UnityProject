@@ -1,2 +1,2 @@
 # UnityProject
-Explortation into the setup of a strong controller.
+A project to explore how a functional and responsive user control system could be setup.
