@@ -2,64 +2,99 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+namespace Controller
 {
-    [SerializeField]
-    private Rigidbody rb;
-    Vector3 velocity;
-    Vector3 direction;
-    float friction;
-    float acceleration = 1.5f;
-    float speed = 5;
-    float maxSpeed = 12;
-
-    float Horizontal;
-    float vertical;
-
-    float targetVelocity = 2f;
-    float maxVelocity = 5f;
-
-    
-    void Update()
+    public class Movement : MonoBehaviour
     {
-        direction = GetInput();
+        [Header("Components")]
+        [Space(2f)]
+        [SerializeField]
+        private Rigidbody rb;
+        [Space(4f)]
+        [Header("Variables")]
+        [Space(2f)]
 
-         acceleration = (direction.normalized * GetRequiredAcceleraton(targetVelocity, 1)).sqrMagnitude;
+        [SerializeField]
+        private float accelRate = 1.5f;
 
-        velocity = direction * (velocity.sqrMagnitude + (acceleration*Time.deltaTime));
+        [SerializeField]
+        private float maxSpeed = 2.5f;
+        [SerializeField]
+        private float maxDrag;
+        [SerializeField]
+        private float dragMultiplier;
+
+        private Vector3 newDirection;
+        private Vector3 currentDirection;
+        private float acceleration;
+        private float speed;
+
+        private Vector3 drag;
+
+        private Vector3 newVelocity;
+        private Vector3 currentVelocity; 
+
+        [SerializeField]
+        private float fCoef;
+
+
+
         
-        // Vector3 v;
-        // if(velocity.sqrMagnitude > maxVelocity)
-        // {
-        //     v = velocity.normalized * maxVelocity;
-        //     velocity = v;
-        // }
+        void Update()
+        {            
+            // Turn input into a direction.
+            newDirection = GetInput().normalized;
 
-        MovementCalc(velocity);
-    }
-    void FixedUpdate(){
-    }
-    void MovementCalc(Vector3 velocity)
-    {
-        rb.MovePosition(transform.position + velocity);
-    }
+            //Check if direction matches current
+            if(newDirection != currentDirection){
+                //add drag if not
+                drag = currentDirection.normalized * 0.2f;
+            }
+            else
+                drag = Vector3.zero;
 
-     float GetRequiredAcceleraton(float aFinalSpeed, float aDrag)
-    {
-        return GetRequiredVelocityChange(aFinalSpeed, aDrag) / Time.fixedDeltaTime;
-    }
+            //update currentDirection
+    
 
-     float GetRequiredVelocityChange(float aFinalSpeed, float aDrag)
-    {
-        float m = Mathf.Clamp01(aDrag * Time.fixedDeltaTime);
-        return aFinalSpeed * m / (1 - m);
-    }
-    Vector3 GetInput()
-    {
-        Horizontal = Input.GetAxis ("Horizontal");
-        vertical = Input.GetAxis ("Vertical");
-        return  new Vector3( Input.GetAxisRaw ("Horizontal"), 0, Input.GetAxisRaw ("Vertical")).normalized;
-    }
+            //if input accelerate to max speed
+            if(newDirection != Vector3.zero){
+                //speed = acceleration + Mathf.Clamp(speed, 0, maxSpeed - acceleration);
+                //newVelocity = (newDirection) * (speed) - drag;
+                newVelocity = (newDirection - (currentDirection *fCoef)) * accelRate + (currentVelocity);
+            }
+            //if there is no input and velocity remains deccelerate
+            else if(currentVelocity.magnitude > 0){
+                // speed = -maxDeccelerationTime + Mathf.Clamp(speed, 0 + maxDeccelerationTime, maxSpeed );
+                // newVelocity = currentVelocity * speed;
+                newVelocity = Vector3.zero;
+            }
+            //else ensure velocity is none
+            else{
+                speed = 0;
+                newVelocity = Vector3.zero;
+            }
+
+            currentDirection = newDirection;   
+
+            
+            MovementCalc(newVelocity);
+        }
+
+        Vector3 GetInput()
+        {
+            return  new Vector3( Input.GetAxisRaw ("Horizontal"), 0, Input.GetAxisRaw ("Vertical"));
+        }
 
 
+        void MovementCalc(Vector3 velocity)
+        {
+            rb.MovePosition(transform.position + velocity);
+            currentVelocity = velocity;
+        }
+        Vector3 GetAcceleration()
+        {
+
+            return Vector3.zero;
+        }
+    }
 }
