@@ -33,17 +33,21 @@ namespace Controller
 
         
         void Update()
-        {            
+        {   
+                  
             // Turn input into a direction.
             newDirection = GetInput().normalized;
-
             //if input accelerate to max speed
             if(newDirection != Vector3.zero){
 
-                //newVelocity = (newDirection - (currentDirection *fCoef)) * accelRate + (currentVelocity);
-                var curve = currentVelocity - (currentDirection *fCoef);
-                newVelocity = (newDirection) * accelRate + curve;
-                newVelocity = Vector3.ClampMagnitude(newVelocity, maxSpeed);
+                // var force = (newDirection - currentDirection) * fCoef;
+                // newVelocity = (newDirection - force) * accelRate;
+                // newVelocity += currentVelocity; 
+                // newVelocity = Vector3.ClampMagnitude(newVelocity, maxSpeed);
+
+                // newVelocity = (newDirection - (currentDirection *fCoef)) * accelRate + (currentVelocity);
+
+                newVelocity = currentVelocity*Time.deltaTime + 0.5f*accelRate*(Time.deltaTime*Time.deltaTime)*newDirection;
             }
             //if there is no input and velocity remains deccelerate
             else if(currentVelocity.magnitude > 0){
@@ -56,16 +60,22 @@ namespace Controller
                 newVelocity = Vector3.zero;
             }
 
-
-            currentVelocity *= fCoef * Time.deltaTime;
-            currentVelocity += newDirection * accelRate * Time.deltaTime;
-            currentVelocity = Vector3.ClampMagnitude(currentVelocity, maxSpeed);
-
-            MovementCalc(currentVelocity);
-
-            currentDirection = newDirection;
             MovementCalc(newVelocity);
+            currentDirection = newDirection;
+            currentVelocity = newVelocity;
         }
+
+        private Vector3 currentVelocity2;
+
+        private void FixedUpdate()
+        {
+            return;
+            currentVelocity2 *= fCoef * Time.deltaTime;
+            currentVelocity2 += newDirection * accelRate * Time.deltaTime;
+            currentVelocity2 = Vector3.ClampMagnitude(currentVelocity2, maxSpeed);
+            MovementCalc(currentVelocity2);
+        }
+        
 
         Vector3 GetInput()
         {
@@ -76,7 +86,6 @@ namespace Controller
         void MovementCalc(Vector3 velocity)
         {
             rb.MovePosition(transform.position + velocity);
-            currentVelocity = velocity;
         }
         Vector3 GetAcceleration()
         {
