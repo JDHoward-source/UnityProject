@@ -426,11 +426,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 815505931}
-  accelRate: 0.3
-  maxSpeed: 1.5
-  maxDrag: 0.1
-  dragMultiplier: 0.1
-  fCoef: 0.2
+  accelRate: 30
+  maxSpeed: 60
+  fCoef: 0.02
 --- !u!1 &1182829869
 GameObject:
   m_ObjectHideFlags: 0
