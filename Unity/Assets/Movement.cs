@@ -58,14 +58,14 @@ namespace Controller
 
             //if input accelerate to max speed
             if(newDirection != Vector3.zero){
-                //speed = acceleration + Mathf.Clamp(speed, 0, maxSpeed - acceleration);
-                //newVelocity = (newDirection) * (speed) - drag;
-                newVelocity = (newDirection - (currentDirection *fCoef)) * accelRate + (currentVelocity);
+
+                //newVelocity = (newDirection - (currentDirection *fCoef)) * accelRate + (currentVelocity);
+                newVelocity = (newDirection) * accelRate + (currentVelocity - (currentDirection *fCoef));
+                newVelocity = Vector3.ClampMagnitude(newVelocity, maxSpeed);
             }
             //if there is no input and velocity remains deccelerate
             else if(currentVelocity.magnitude > 0){
-                // speed = -maxDeccelerationTime + Mathf.Clamp(speed, 0 + maxDeccelerationTime, maxSpeed );
-                // newVelocity = currentVelocity * speed;
+
                 newVelocity = Vector3.zero;
             }
             //else ensure velocity is none
