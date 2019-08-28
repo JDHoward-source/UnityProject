@@ -45,9 +45,9 @@ namespace Controller
                 // newVelocity += currentVelocity; 
                 // newVelocity = Vector3.ClampMagnitude(newVelocity, maxSpeed);
 
-                // newVelocity = (newDirection - (currentDirection *fCoef)) * accelRate + (currentVelocity);
+                newVelocity = (newDirection - (currentDirection *fCoef)) * accelRate + (currentVelocity);
 
-                newVelocity = currentVelocity*Time.deltaTime + 0.5f*accelRate*(Time.deltaTime*Time.deltaTime)*newDirection;
+                //newVelocity = currentVelocity*Time.deltaTime + 0.5f*accelRate*(Time.deltaTime*Time.deltaTime)*newDirection;
             }
             //if there is no input and velocity remains deccelerate
             else if(currentVelocity.magnitude > 0){
@@ -63,6 +63,9 @@ namespace Controller
             MovementCalc(newVelocity);
             currentDirection = newDirection;
             currentVelocity = newVelocity;
+
+            Debug.DrawRay(transform.position, newDirection, Color.red);
+            Debug.DrawRay(transform.position, currentVelocity, Color.green);
         }
 
         private Vector3 currentVelocity2;

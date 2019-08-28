@@ -23,8 +23,8 @@ public class Movement2 : MonoBehaviour
     {  
         idealVelocity = Vector3.Lerp(idealVelocity, GetInput() * maxSpeed, inputDamping * Time.deltaTime);
         currentVelocity = Vector3.MoveTowards(currentVelocity, idealVelocity, friction * Time.time);
-        transform.position += currentVelocity * Time.deltaTime;
-        //rb.MovePosition(transform.position + (currentVelocity * Time.deltaTime)); // making work with rb instead of transform
+        //transform.position += currentVelocity * Time.deltaTime;
+        rb.MovePosition(transform.position + (currentVelocity * Time.deltaTime)); // making work with rb instead of transform
 
         Debug.DrawRay(transform.position, idealVelocity, Color.red);
         Debug.DrawRay(transform.position, currentVelocity, Color.green);
