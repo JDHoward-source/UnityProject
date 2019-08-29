@@ -475,7 +475,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 815505931}
   maxSpeed: 2
-  accelRate: 5
+  accel: 0.2
+  direction: {x: 0, y: 0, z: 0}
 --- !u!1 &1182829869
 GameObject:
   m_ObjectHideFlags: 0
