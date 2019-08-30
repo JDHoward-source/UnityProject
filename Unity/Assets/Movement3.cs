@@ -13,7 +13,7 @@ public class Movement3 : MonoBehaviour
     [SerializeField]
     private float deccel;
     [SerializeField]
-    private Vector3 direction;
+    private Vector3 oldDirection;
 
 
     private Vector3 currentVelocity;
@@ -22,7 +22,7 @@ public class Movement3 : MonoBehaviour
 
     private void Update()
     {
-         var dir = GetInput().normalized;
+         var newDirection = GetInput().normalized;
 
         // speed = speed * GetNewDirectionRatio(dir) + accel*Time.deltaTime;
         // speed = Mathf.Min (speed, maxSpeed);
@@ -31,9 +31,8 @@ public class Movement3 : MonoBehaviour
 
         // rb.MovePosition(transform.position + currentVelocity);
 
-        dir = dir - direction * fCoef;
-        if(dir != Vector3.zero)
-            currentVelocity += (accel * dir) * Time.deltaTime;
+        if(newDirection != Vector3.zero)
+            currentVelocity += (accel * (newDirection - oldDirection * fCoef)) * Time.deltaTime;
         else
             currentVelocity -= (deccel * currentVelocity) * Time.deltaTime;
         
@@ -43,7 +42,7 @@ public class Movement3 : MonoBehaviour
 
         Debug.DrawRay(transform.position, currentVelocity, Color.green);
 
-        direction = dir;
+        oldDirection = newDirection;
     }
 
     Vector3 GetInput()
@@ -53,7 +52,7 @@ public class Movement3 : MonoBehaviour
 
     private float GetNewDirectionRatio (Vector3 newDirection) 
     {
-        float angle = Vector3.Angle (newDirection, direction);
+        float angle = Vector3.Angle (newDirection, oldDirection);
         float ratio = 1.0f - angle / 180.0f;
         return ratio;
     }
