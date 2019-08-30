@@ -474,9 +474,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 815505931}
-  maxSpeed: 2
-  accel: 0.2
+  maxSpeed: 40
+  accel: 30
+  deccel: 5
   direction: {x: 0, y: 0, z: 0}
+  fCoef: 0.9
 --- !u!1 &1182829869
 GameObject:
   m_ObjectHideFlags: 0

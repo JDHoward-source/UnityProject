@@ -11,26 +11,39 @@ public class Movement3 : MonoBehaviour
     [SerializeField]
     private float accel;
     [SerializeField]
+    private float deccel;
+    [SerializeField]
     private Vector3 direction;
 
-    private float speed;
 
     private Vector3 currentVelocity;
-
+    [SerializeField]
+    private float fCoef;
 
     private void Update()
     {
-        var dir = GetInput().normalized;
+         var dir = GetInput().normalized;
 
-        speed = speed * GetNewDirectionRatio(dir) + accel*Time.deltaTime;
-        speed = Mathf.Min (speed, maxSpeed);
+        // speed = speed * GetNewDirectionRatio(dir) + accel*Time.deltaTime;
+        // speed = Mathf.Min (speed, maxSpeed);
 
-        currentVelocity = speed*dir;
+        // currentVelocity = speed*dir;
 
-        rb.MovePosition(transform.position + currentVelocity); 
+        // rb.MovePosition(transform.position + currentVelocity);
+
+        dir = dir - direction * fCoef;
+        if(dir != Vector3.zero)
+            currentVelocity += (accel * dir) * Time.deltaTime;
+        else
+            currentVelocity -= (deccel * currentVelocity) * Time.deltaTime;
+        
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, maxSpeed);
+
+        rb.MovePosition(transform.position + currentVelocity * Time.deltaTime);
+
         Debug.DrawRay(transform.position, currentVelocity, Color.green);
-        direction = dir;
 
+        direction = dir;
     }
 
     Vector3 GetInput()
