@@ -20,19 +20,16 @@ public class Movement3 : MonoBehaviour
     [SerializeField]
     private float fCoef;
 
+    private Vector3 diff;
+
     private void Update()
     {
-         var newDirection = GetInput().normalized;
+        var newDirection = GetInput().normalized;
 
-        // speed = speed * GetNewDirectionRatio(dir) + accel*Time.deltaTime;
-        // speed = Mathf.Min (speed, maxSpeed);
-
-        // currentVelocity = speed*dir;
-
-        // rb.MovePosition(transform.position + currentVelocity);
+        diff = newDirection - oldDirection * fCoef;
 
         if(newDirection != Vector3.zero)
-            currentVelocity += (accel * (newDirection - oldDirection * fCoef)) * Time.deltaTime;
+            currentVelocity += (accel * (newDirection)) * Time.deltaTime;
         else
             currentVelocity -= (deccel * currentVelocity) * Time.deltaTime;
         
@@ -44,17 +41,9 @@ public class Movement3 : MonoBehaviour
 
         oldDirection = newDirection;
     }
-
     Vector3 GetInput()
     {
         return  new Vector3( Input.GetAxisRaw ("Horizontal"), 0, Input.GetAxisRaw ("Vertical"));
-    }
-
-    private float GetNewDirectionRatio (Vector3 newDirection) 
-    {
-        float angle = Vector3.Angle (newDirection, oldDirection);
-        float ratio = 1.0f - angle / 180.0f;
-        return ratio;
     }
  
 }
