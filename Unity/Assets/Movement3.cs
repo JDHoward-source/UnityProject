@@ -11,6 +11,9 @@ public class Movement3 : MonoBehaviour
     [SerializeField]
     private float accel;
     [SerializeField]
+    private float turningAccel;
+
+    [SerializeField]
     private float deccel;
     [SerializeField]
     private Vector3 oldDirection;
@@ -20,20 +23,25 @@ public class Movement3 : MonoBehaviour
     [SerializeField]
     private float fCoef;
 
-    private Vector3 diff;
+    private float dot;
 
     private void Update()
     {
         var newDirection = GetInput().normalized;
 
-        diff = newDirection - oldDirection * fCoef;
-
         if(newDirection != Vector3.zero)
-            currentVelocity += (accel * (newDirection)) * Time.deltaTime;
+        {
+            dot = Vector3.Dot(newDirection.normalized, currentVelocity.normalized);
+            float a = (dot == 1 || dot == -1) ? accel : turningAccel;
+            currentVelocity += (a * (newDirection)) * Time.deltaTime;   
+        }
         else
+        {
             currentVelocity -= (deccel * currentVelocity) * Time.deltaTime;
-        
+        }
+
         currentVelocity = Vector3.ClampMagnitude(currentVelocity, maxSpeed);
+        
 
         rb.MovePosition(transform.position + currentVelocity * Time.deltaTime);
 
