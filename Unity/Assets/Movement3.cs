@@ -24,6 +24,10 @@ public class Movement3 : MonoBehaviour
     private float fCoef;
 
     private float dot;
+    private float angle;
+    private Vector3 a;
+
+    private float currentMag;
 
     private void Update()
     {
@@ -32,8 +36,15 @@ public class Movement3 : MonoBehaviour
         if(newDirection != Vector3.zero)
         {
             dot = Vector3.Dot(newDirection.normalized, currentVelocity.normalized);
-            float a = (dot == 1 || dot == -1) ? accel : turningAccel;
-            currentVelocity += (a * (newDirection)) * Time.deltaTime;   
+            angle = Mathf.Acos(dot);
+            a = accel * (newDirection);
+            currentMag = currentVelocity.magnitude;
+            if( angle > 0.7)//if angle difference is greater than 45 character needs to decellerate at a rate and then move in new direction.
+            {
+                currentMag = currentVelocity.magnitude;
+            }
+
+            currentVelocity += a * Time.deltaTime;
         }
         else
         {
